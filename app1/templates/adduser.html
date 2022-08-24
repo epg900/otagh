@@ -1,0 +1,36 @@
+{% extends "login.html" %}
+{% load static %}
+{% block content %}
+    {% if request.user.is_authenticated and request.user.username == "admin" %}
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-form-title" style="background-image: url({% static 'login/pics/bg-01.jpg' %});">
+					<span class="login100-form-title-1">افزودن کاربر</span>
+				</div>
+
+					<form id="loadpic"  method="post" enctype="multipart/form-data" action="/signup/" class="login100-form validate-form">
+					{% csrf_token %}
+							{% for field in form %}
+							<div class="form-group validate-input" >
+								<span class="label-input100">
+								{{ field.label_tag }}
+								</span>
+								{{ field }}
+								<span class="focus-input100"></span>
+							</div>
+							{% endfor %}
+							<div class="container-login100-form-btn">
+								<a href="/" class="login100-form-btn">بازگشت</a>
+								<button class="login100-form-btn">افزودن</button>
+							</div>
+					</form>
+			</div>
+		</div>
+	</div>
+	{% else %}
+	<script>
+	    window.location.href = "/";
+	</script>
+	{% endif %}
+{% endblock content %}

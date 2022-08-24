@@ -1,0 +1,25 @@
+{% extends "login.html" %}
+{% load static %}
+{% block content %}
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-form-title" style="background-image: url({% static 'login/pics/bg-01.jpg' %});">
+					<span class="login100-form-title-1">   تغییر رمز عبور </span>
+				</div>
+				<form class="login100-form validate-form"  id="login" method="post" enctype="multipart/form-data" action="/changepass/" >
+				    {% csrf_token %}
+					        {% for field in form %}
+							<div class="form-group" >
+								{{ field.label_tag }}
+								{{ field}}
+							</div>
+							{% endfor %}
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">ذخیره</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    {% endblock content %}
