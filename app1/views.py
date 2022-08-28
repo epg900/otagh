@@ -1,29 +1,28 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse,FileResponse,Http404,StreamingHttpResponse
+from django.http import HttpResponse,Http404
 from django.core.mail import send_mail
 from django.conf import settings
-import requests
-#from django.contrib.auth.models import User,Permission
-from .forms import ImageForm,SignupForm,Rsettingform
-from .models import Image,Rsetting,Ruser
-import os,shutil,threading,random,string
-#import os,shutil,pyotp,threading,cryptocompare,random,string,pyqrcode
-#from pytube import YouTube
-from datetime import datetime
+
+from .forms import SignupForm,Rsettingform
+from .models import Rsetting,Ruser
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-
-
-
+#import os,shutil,threading,random,string,requests
+#import os,shutil,pyotp,threading,cryptocompare,random,string,pyqrcode
+#from pytube import YouTube
+#from datetime import datetime
+#from django.contrib.auth.models import User,Permission
 ####################################################################
 def index(request):
 	try:
-	    #etcprice=cryptocompare.get_price('ETC', currency='USD')
-	    #etcprice1=etcprice['ETC']['USD']
-	    #etcprice1='fff'
-	    #context = {'bodytitle':'خوش آمدید','bodytext':'Benvenuto','etcprice':etcprice1 }
+	    return render (request,'ou.html')
+	except:
+		raise Http404("Not Found")
+####################################################################
+def admin(request):
+	try:
 	    return render (request,'bt.html')
 	except:
 		raise Http404("Not Found")
@@ -56,91 +55,37 @@ def logauth(request):
             #        return redirect ('/')
             user = authenticate(request, username=username, password=password)
             if user is not None :
-                login(request , user)
-                return redirect ('/')
+                if username == 'admin' :
+                   login(request , user)
+                   return redirect ('/admin')
+                else:
+                   login(request , user)
+                   return redirect ('/')
             else:
                 return redirect ('/')
     except:
         return redirect ('/')
     return redirect ('/')
-####################################################################
-def image_upload_view(request):
-    if not request.user.is_authenticated:
-        return render (request,'login.html')
-    try:
-        if request.method == 'POST':
-            form = ImageForm(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
-                return render(request, 'index.html', {'form': form})
-        else:
-            form = ImageForm()
-        context = {'bodytitle':'خوش آمدید','bodytext':'Benvenuto','form': form}
-        return render(request, 'index.html', context)
-    except:
-        return render (request,'login.html')
-####################################################################
-def display(request):
-    if not request.user.is_authenticated:
-        return render (request,'login.html')
-    #try:
-    disp=Image.objects.all()
-    if request.method == 'POST':
-        post1=request.POST['imgid']
-        pic=Image.objects.filter(pk=int(post1))
-        pic1=os.path.join(settings.BASE_DIR,'app1')
-        pic11=pic[0].image.url
-        pic2=pic1 + '/' + pic11
-        if os.path.isfile('/home/epg900/site1/app1/static/tmp2.jpg'):
-                os.remove('/home/epg900/site1/app1/static/tmp2.jpg')
-        if os.path.isfile(pic2):
-            pic3=os.path.join(settings.BASE_DIR, 'app1/static')
-            pic4=os.path.join(pic3,'tmp2.jpg')
-            shutil.copy(pic2, pic4)
-        return render(request,'disp.html', {'disp':disp ,'pic':post1})
-    else:
-        return render (request,'disp.html',{'disp':disp})
-    #except:
-    #    raise Http404("Posttt4 not found")
+
 ####################################################################
 def changepass(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('/')
+    if request.user.username == "admin":
+        if request.method == 'POST':
+            form = PasswordChangeForm(request.user, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('/admin')
+            else:
+                messages.error(request, '')
         else:
-            messages.error(request, '')
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'changepass.html', {'form': form  })
-####################################################################
-def openpage(request):
-    #if not request.user.is_authenticated:
-    #    return render (request,'login.html')
-    try:
-        url = request.GET['url']
-        response = requests.get(url, stream=True, headers={'user-agent': request.headers.get('user-agent')})
-        return StreamingHttpResponse(response.raw,content_type=response.headers.get('content-type'),status=response.status_code,reason=response.reason)
-    except:
-        return render (request,'index.html')
-####################################################################
-
-####################################################################
-
-####################################################################
-
-####################################################################
-
+            form = PasswordChangeForm(request.user)
+    return render(request, 'bt.html', {'form': form , 'var1' : 7 })
 ####################################################################
 def emailme(request):
     send_mail(subject='', message=str(''),  from_email=settings.EMAIL_HOST_USER,   recipient_list=['epg900@gmail.com'])
     return HttpResponse("Email Sent")
-####################################################################
-def bt(request):
-    return render(request, 'bt.html')
 ####################################################################
 def signup(request):
     if not request.user.is_authenticated:
@@ -165,6 +110,8 @@ def setconf(request):
     try:
         if request.user.username == "admin":
             ins1=Rsetting.objects.all().first()
+            signer = Ruser.objects.get(personeli=ins1.signer)
+            mali = Ruser.objects.get(personeli=ins1.mali)
             if request.method == 'POST':
                 form = Rsettingform(request.POST, instance = ins1)
                 if form.is_valid():
@@ -172,7 +119,7 @@ def setconf(request):
                     return render(request, 'bt.html', {'var1' : 2 , 'bodytitle':'تنظیمات ذخیره شد'})
             else:
                 form = Rsettingform(instance = ins1)
-        return render(request, 'bt.html', {'form': form , 'var1' : 1})
+        return render(request, 'bt.html', {'form': form , 'var1' : 1 , 'signer' : signer.last_name , 'mali' : mali.last_name })
     except:
         return redirect ('/')
 
@@ -182,7 +129,7 @@ def edituser(request):
         return redirect ('/')
     try:
         if request.user.username == "admin":
-            userlist=Ruser.objects.all()
+            userlist=Ruser.objects.exclude(username = "admin")
         return render(request, 'bt.html', {'userlist': userlist , 'var1' : 3 })
     except:
         return redirect ('/')
@@ -214,12 +161,44 @@ def useredit(request):
                     ins1.save()
                     #update_session_auth_hash(request, user)  # Important!
                     #messages.success(request, 'Your password was successfully updated!')
-                    return redirect('/')
+                    return redirect('/admin')
         return redirect('/')
     except:
         return redirect ('/')
 ####################################################################
+
 '''
+
+if request.method == 'POST':
+            form = ImageForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return render(request, 'index.html', {'form': form})
+        else:
+            form = ImageForm()
+        context = {'bodytitle':'خوش آمدید','bodytext':'Benvenuto','form': form}
+        return render(request, 'index.html', context)
+
+disp=Image.objects.all()
+    if request.method == 'POST':
+        post1=request.POST['imgid']
+        pic=Image.objects.filter(pk=int(post1))
+        pic1=os.path.join(settings.BASE_DIR,'app1')
+        pic11=pic[0].image.url
+        pic2=pic1 + '/' + pic11
+        if os.path.isfile('/home/epg900/site1/app1/static/tmp2.jpg'):
+                os.remove('/home/epg900/site1/app1/static/tmp2.jpg')
+        if os.path.isfile(pic2):
+            pic3=os.path.join(settings.BASE_DIR, 'app1/static')
+            pic4=os.path.join(pic3,'tmp2.jpg')
+            shutil.copy(pic2, pic4)
+        return render(request,'disp.html', {'disp':disp ,'pic':post1})
+
+
+        url = request.GET['url']
+        response = requests.get(url, stream=True, headers={'user-agent': request.headers.get('user-agent')})
+        return StreamingHttpResponse(response.raw,content_type=response.headers.get('content-type'),status=response.status_code,reason=response.reason)
+
 python3.8 -m pip install cryptocompare     <<    Its Only  Work on Pythonanywhere
 epgccp@gmail.com    cc#@1234
 user1_code='H4ZT2CIHQM5XO2VUSZPHWTBHMNQBDY3B'

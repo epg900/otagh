@@ -1,22 +1,7 @@
 from django import forms
-from .models import Image,Rsetting,Ruser
+from .models import Rsetting,Ruser
 from django.contrib.auth.forms import UserCreationForm
 
-class ImageForm(forms.ModelForm):
-    """Form for the image model"""
-    class Meta:
-        model = Image
-        fields = ['title', 'name' , 'image']
-        widgets = {
-            'title': forms.TextInput(attrs={'class': "form-control"}),
-            'name': forms.TextInput(attrs={'class': "form-control"}),
-            'image': forms.FileInput(attrs={'class': "form-control"}),
-        }
-        labels = {
-            'title': "عنوان",
-            'name': "نام",
-            'image': "تصویر",
-        }
 
 class SignupForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
