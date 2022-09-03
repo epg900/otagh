@@ -15,5 +15,6 @@ urlpatterns = [
     path('edituser/', views.edituser),
     path('usereditform/', views.usereditform),
     path('useredit/', views.useredit),
+    path('test/', views.test),
 ]
 

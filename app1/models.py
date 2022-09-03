@@ -62,5 +62,14 @@ class Pass(models.Model):
         return self.user
 
 
+class Menumodel(models.Model):
+    title = models.CharField(max_length=30)
+    link = models.CharField(max_length=30,null=True)
+    classs = models.CharField(max_length=30,null=True)
+    parent = models.IntegerField()
+    def __str__(self):
+        return self.title
+
+
 
 

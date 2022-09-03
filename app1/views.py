@@ -3,12 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse,Http404
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.utils.html import format_html
 from .forms import SignupForm,Rsettingform
 from .models import Rsetting,Ruser
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+import pandas as pd
 #import os,shutil,threading,random,string,requests
 #import os,shutil,pyotp,threading,cryptocompare,random,string,pyqrcode
 #from pytube import YouTube
@@ -60,7 +61,9 @@ def logauth(request):
                    return redirect ('/admin')
                 else:
                    login(request , user)
-                   return redirect ('/')
+                   lst=[[1,'a','aa','ac',0],[2,'b','aa','ac',0],[3,'c','aa','ac',1],[4,'d','aa','ac',3],[5,'e','aa','ac',1]]
+                   df = pd.DataFrame(lst, columns =['id', 'title', 'link','clas','parent'])
+                   return render (request,'ou.html',{'temp' : df})
             else:
                 return redirect ('/')
     except:
@@ -166,6 +169,10 @@ def useredit(request):
     except:
         return redirect ('/')
 ####################################################################
+def test(request):
+
+    html_text=format_html("<H1>{}</H1>","<i>test<i>")
+    return HttpResponse(html_text)
 
 '''
 
