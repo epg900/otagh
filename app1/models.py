@@ -47,28 +47,19 @@ class PassType(models.Model):
         return self.name
 
 class Pass(models.Model):
-    user = models.ForeignKey(Ruser , on_delete=models.CASCADE )
-    req_date = models.CharField(max_length=10)
-    pass_type = models.ForeignKey(PassType , on_delete=models.CASCADE )
-    start_date = models.CharField(max_length=10)
-    end_date = models.CharField(max_length=10)
-    start_time = models.CharField(max_length=10)
-    end_time = models.CharField(max_length=10)
-    reason = models.CharField(max_length=10)
-    sick_paper = models.ImageField(upload_to='images')
-    state = models.ForeignKey(StateType , on_delete=models.CASCADE )
-    signer = models.CharField(max_length=10)
+    user = models.ForeignKey(Ruser , on_delete=models.CASCADE ,verbose_name='نام کاربری')
+    req_date = models.CharField(max_length=10 ,verbose_name='تاریخ  ثبت درخواست')
+    pass_type = models.ForeignKey(PassType , on_delete=models.CASCADE ,verbose_name='نوع مرخصی ' )
+    start_date = models.CharField(max_length=10 ,verbose_name='تاریخ شروع')
+    end_date = models.CharField(max_length=10 ,verbose_name='تاریخ پایان')
+    start_time = models.CharField(max_length=10 ,verbose_name='ساعت شروع')
+    end_time = models.CharField(max_length=10 ,verbose_name='ساعت پایان')
+    reason = models.CharField(max_length=10 ,verbose_name='علت درخواست')
+    sick_paper = models.ImageField(upload_to='images', blank=True, null=True ,verbose_name='گواهی درخواست')
+    state = models.ForeignKey(StateType , default=3 , on_delete=models.CASCADE ,verbose_name='وضعیت درخواست')
+    signer = models.CharField(max_length=10 , default='10001' ,verbose_name='تایید کننده' )
     def __str__(self):
-        return self.user
-
-
-class Menumodel(models.Model):
-    title = models.CharField(max_length=30)
-    link = models.CharField(max_length=30,null=True)
-    classs = models.CharField(max_length=30,null=True)
-    parent = models.IntegerField()
-    def __str__(self):
-        return self.title
+        return self.req_date
 
 
 

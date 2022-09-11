@@ -1,5 +1,5 @@
 from django import forms
-from .models import Rsetting,Ruser
+from .models import Rsetting,Ruser,PassType,Pass,StateType
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -23,3 +23,9 @@ class Rsettingform(forms.ModelForm):
     class Meta:
         model = Rsetting
         fields = "__all__"
+
+class Tpass(forms.ModelForm):
+    class Meta:
+        model = Pass
+        exclude = ('user' , 'signer', 'state' , 'pass_type')
+

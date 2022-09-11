@@ -28,9 +28,9 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
-				    {% if request.user.is_authenticated and request.user.username == "admin" %}
+				    {% if request.user.is_authenticated and request.user.username == "h.tizhoosh" %}
 				    <li class="nav-item">
-						<a class="nav-link js-scroll-trigger" href="/setconf">تنظیمات</a>
+						<a class="nav-link js-scroll-trigger" href="/passtest">بررسی درخواستها</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link js-scroll-trigger" href="/edituser">مدیریت کاربران</a>
@@ -72,14 +72,78 @@
 	<section class="page-section bg-dark text-white" id="main">
 		<div class="container-fluid">
 				{% if request.user.is_authenticated %}
+				{% if var1 == 1 %}
+				<form  class="row" id="login" method="post" enctype="multipart/form-data" action="/addpass/" >
+				    {% csrf_token %}
+				            {% for field in form %}
+					        <div class="col-md-3 form-group" >
+								{{ field.label_tag }}
+							</div>
+							<div class="col-md-3 form-group" >
+								{{ field}}
+							</div>
+							{% endfor %}
+					<div class="col-12 form-group">
+					    <button class="btn btn-primary btn-xl ">ذخیره</button>
+                    </div>
+				</form>
+				{% elif var1 == 3 %}
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped table-hover">
+                        <tr>
+                        <th>نام کاربری</th>
+                        <th>ایمیل</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>شماره پرسنلی</th>
+                        <th>دستمزد ماهیانه</th>
+                        <th></th>
+                        </tr>
+                        {% for i in passlist %}
+                        <tr>
+                        <td>{{i.user.last_name}}</td>
+                        <td>{{i.pass_type}}</td>
+                        <td>{{i.req_date}}</td>
+                        <td>{{i.start_date}}</td>
+                        <td>{{i.state}}</td>
+                        <td><a class="btn btn-primary" href="/usereditform?id={{i.id}}">ویرایش</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+				</div>
+				{% elif var1 == 8 %}
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped table-hover">
+                        <tr>
+                        <th>نام کاربر</th>
+                        <th>تاریخ درخواست</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>شماره پرسنلی</th>
+                        <th>دستمزد ماهیانه</th>
+                        <th></th>
+                        <th></th>
+                        </tr>
+                        {% for i in passlist %}
+                        <tr>
+                        <td>{{i.user.last_name}}</td>
+                        <td>{{i.req_date}}</td>
+                        <td>{{i.start_date}}</td>
+                        <td>{{i.reason}}</td>
+                        <td>{{i.state}}</td>
+                        <td><a class="btn btn-primary" href="/passtest?id={{i.id}}&ok=1">تایید</a></td>
+                        <td><a class="btn btn-danger" href="/passtest?id={{i.id}}&ok=2">عدم تایید</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+				</div>
+				{% endif %}
                 <div class="col-lg-12 align-self-end">
 					<h1 class="text-uppercase text-white font-weight-bold">خوش آمدید  {{request.user.last_name}} </h1>
 					<br>
-					<h4>{{temp|limenu}}</h4>
+					<h4>{{temp}}</h4>
 				</div>
 				<div class="col-lg-8 align-self-baseline">
 					<p class="text-white-75 font-weight-light mb-5">از منوی مربوطه عملیات مورد نطر خود را انتخاب نمایید </p>
-					<a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">لیست مرخصی</a>
+					<a class="btn btn-primary btn-xl js-scroll-trigger" href="/addpass">لیست مرخصی</a>
 				</div>
                 {% else %}
 				<div class="col-lg-12 align-self-end">

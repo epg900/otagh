@@ -16,5 +16,8 @@ urlpatterns = [
     path('usereditform/', views.usereditform),
     path('useredit/', views.useredit),
     path('test/', views.test),
+    path('addpass/', views.addpass),
+    path('listpass/', views.listpass),
+    path('passtest/', views.passtest),
 ]
 

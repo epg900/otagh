@@ -4,8 +4,8 @@ from django.http import HttpResponse,Http404
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.html import format_html
-from .forms import SignupForm,Rsettingform
-from .models import Rsetting,Ruser
+from .forms import SignupForm,Rsettingform,Tpass
+from .models import Rsetting,Ruser,Pass,PassType,StateType
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -168,6 +168,59 @@ def useredit(request):
         return redirect('/')
     except:
         return redirect ('/')
+####################################################################
+def addpass(request):
+    if not request.user.is_authenticated:
+        return redirect ('/')
+    try:
+        if request.method == 'POST':
+                form = Tpass(request.POST,initial={'pass_type':1,})
+                #form.fields['pass_type'].widget.attrs['readonly'] = True
+                if form.is_valid():
+                    instance=form.save(commit=False)
+                    instance.user=request.user
+                    instance.pass_type=PassType.objects.get(id = 1)
+                    instance.save()
+                    #form.save(commit=False)
+                    #form.user=request.user
+                    #form.save()
+                    return render(request, 'ou.html', {'bodytitle':'افزوده شد','bodytext':'', 'var1' : 2 })
+        else:
+                form = Tpass(initial={'pass_type':1,})
+        return render(request, 'ou.html', {'form': form , 'var1' : 1 })
+    except:
+        return redirect ('/')
+####################################################################
+def listpass(request):
+    if not request.user.is_authenticated:
+        return redirect ('/')
+    try:
+        passlist=Pass.objects.all()
+        return render(request, 'ou.html', {'passlist': passlist , 'var1' : 3 })
+    except:
+        return redirect ('/')
+####################################################################
+def passtest(request):
+    if not request.user.is_authenticated:
+        return redirect ('/')
+    if request.user.username == "h.tizhoosh":
+        if request.method == 'GET' and request.GET.get("id") is not None and request.GET.get("ok") is not None:
+                idx = request.GET['id']
+                okn = request.GET['ok']
+                #return HttpResponse(idx + " " + okn)
+                if okn == '1' :
+                    ins1=Pass.objects.get(id = idx)
+                    ins1.state=StateType.objects.get(id = 1)
+                    ins1.save()
+                if okn == '2' :
+                    ins1=Pass.objects.get(id = idx)
+                    ins1.state=StateType.objects.get(id = 2)
+                    ins1.save()
+        passlist = Pass.objects.all()
+        return render(request, 'ou.html',{'passlist' : passlist , 'var1' : 8 })
+    return redirect ('/')
+
+
 ####################################################################
 def test(request):
 
