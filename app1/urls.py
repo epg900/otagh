@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index),
-    path('admin/', views.index),
+    path('admin/', views.admin),
     path('login/', views.login_form),
 	path('logout/', views.logout_form),
 	path('changePass/', views.changePass ),
@@ -12,8 +12,7 @@ urlpatterns = [
     path('email/', views.emailme),
     path('signup/', views.signup),
     path('setconf/', views.setconf),
-    path('edituser/', views.edituser),
-    path('usereditform/', views.usereditform),
+    path('listuser/', views.listuser),
     path('useredit/', views.useredit),
     path('test/', views.test),
     path('addpass/', views.addpass),

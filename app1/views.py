@@ -127,25 +127,13 @@ def setconf(request):
         return redirect ('/')
 
 ####################################################################
-def edituser(request):
+def listuser(request):
     if not request.user.is_authenticated:
         return redirect ('/')
     try:
         if request.user.username == "admin":
             userlist=Ruser.objects.exclude(username = "admin")
         return render(request, 'bt.html', {'userlist': userlist , 'var1' : 3 })
-    except:
-        return redirect ('/')
-####################################################################
-def usereditform(request):
-    if not request.user.is_authenticated:
-        return redirect ('/')
-    try:
-        if request.user.username == "admin":
-            idx = request.GET['id']
-            ins1=Ruser.objects.get(id = idx)
-            form =SignupForm(instance = ins1)
-        return render(request, 'bt.html', {'form': form , 'var1' : 4 ,'idx' : idx })
     except:
         return redirect ('/')
 ####################################################################
@@ -165,6 +153,11 @@ def useredit(request):
                     #update_session_auth_hash(request, user)  # Important!
                     #messages.success(request, 'Your password was successfully updated!')
                     return redirect('/admin')
+            else:
+                idx = request.GET['id']
+                ins1=Ruser.objects.get(id = idx)
+                form =SignupForm(instance = ins1)
+                return render(request, 'bt.html', {'form': form , 'var1' : 4 ,'idx' : idx })
         return redirect('/')
     except:
         return redirect ('/')
